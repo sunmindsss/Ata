@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <meta name="theme-color" content="#0a0e27">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="description" content="A.T.A - Adaptive Thought Archive ระบบบันทึกข้อมูลอัจฉริยะพร้อมเครือข่ายความรู้">
+  <link rel="manifest" href="manifest.json">
+  <link rel="apple-touch-icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🧠</text></svg>">
+  <link rel="stylesheet" href="css/style.css">
+  <title>A.T.A - Adaptive Thought Archive</title>
+</head>
+<body>
+  <div id="app">
+    <!-- Header -->
+    <header id="main-header">
+      <div class="header-content">
+        <h1 class="app-title">🧠 A.T.A</h1>
+        <span class="app-subtitle">Adaptive Thought Archive</span>
+      </div>
+      <div class="header-stats">
+        <span id="node-count">0 nodes</span>
+        <span id="edge-count">0 links</span>
+      </div>
+    </header>
+
+    <!-- Tab Navigation -->
+    <nav id="tab-nav">
+      <button class="tab-btn active" data-tab="home">🏠 หน้าแรก</button>
+      <button class="tab-btn" data-tab="add">➕ เพิ่ม</button>
+      <button class="tab-btn" data-tab="search">🔍 ค้นหา</button>
+      <button class="tab-btn" data-tab="graph">🕸️ กราฟ</button>
+      <button class="tab-btn" data-tab="settings">⚙️</button>
+    </nav>
+
+    <!-- Main Content Area -->
+    <main id="content-area">
+      
+      <!-- Home Tab -->
+      <section id="tab-home" class="tab-content active">
+        <div class="welcome-card">
+          <div class="brain-icon">🧠</div>
+          <h2>ยินดีต้อนรับสู่ A.T.A</h2>
+          <p>ระบบบันทึกข้อมูลที่เรียนรู้และปรับตัวตามการใช้งานของคุณ</p>
+        </div>
+        
+        <div class="quick-stats">
+          <div class="stat-card">
+            <span class="stat-icon">📝</span>
+            <span class="stat-value" id="stat-total-nodes">0</span>
+            <span class="stat-label">ข้อมูลทั้งหมด</span>
+          </div>
+          <div class="stat-card">
+            <span class="stat-icon">🔥</span>
+            <span class="stat-value" id="stat-hot-nodes">0</span>
+            <span class="stat-label">ข้อมูลยอดนิยม</span>
+          </div>
+          <div class="stat-card">
+            <span class="stat-icon">🔗</span>
+            <span class="stat-value" id="stat-total-edges">0</span>
+            <span class="stat-label">ความเชื่อมโยง</span>
+          </div>
+        </div>
+
+        <div class="recent-nodes">
+          <h3>📋 ล่าสุด</h3>
+          <div id="recent-list" class="node-list"></div>
+        </div>
+      </section>
+
+      <!-- Add Tab -->
+      <section id="tab-add" class="tab-content">
+        <form id="add-form" class="data-form">
+          <div class="form-group">
+            <label for="input-title">หัวข้อ <span class="required">*</span></label>
+            <input type="text" id="input-title" placeholder="ป้อนหัวข้อข้อมูล..." required maxlength="200">
+          </div>
+          
+          <div class="form-group">
+            <label for="input-content">เนื้อหา <span class="required">*</span></label>
+            <textarea id="input-content" placeholder="ป้อนรายละเอียดข้อมูล..." required rows="5" maxlength="5000"></textarea>
+            <span class="char-count" id="content-char-count">0/5000</span>
+          </div>
+          
+          <div class="form-group">
+            <label for="input-tags">แท็ก (คั่นด้วยคอมม่า)</label>
+            <input type="text" id="input-tags" placeholder="เช่น: เทคโนโลยี, AI, การเรียนรู้">
+          </div>
+          
+          <div class="form-group">
+            <label for="input-links">เชื่อมโยงกับข้อมูล (ID, คั่นด้วยคอมม่า)</label>
+            <input type="text" id="input-links" placeholder="เช่น: 1, 3, 5">
+          </div>
+          
+          <button type="submit" class="btn-primary">💾 บันทึกข้อมูล</button>
+        </form>
+        <div id="add-message" class="message"></div>
+      </section>
+
+      <!-- Search Tab -->
+      <section id="tab-search" class="tab-content">
+        <div class="search-container">
+          <div class="search-input-wrapper">
+            <input type="text" id="search-input" placeholder="🔍 ค้นหาข้อมูล..." autocomplete="off">
+            <button id="search-clear" class="btn-icon" title="ล้าง">✕</button>
+          </div>
+          <div class="search-filters">
+            <label class="filter-label">
+              <input type="checkbox" id="filter-title-only"> ค้นหาเฉพาะหัวข้อ
+            </label>
+            <select id="sort-by">
+              <option value="relevance">เรียงตามความเกี่ยวข้อง</option>
+              <option value="weight">เรียงตามน้ำหนัก</option>
+              <option value="date">เรียงตามวันที่</option>
+            </select>
+          </div>
+          <div id="search-results" class="search-results">
+            <p class="no-results">พิมพ์เพื่อเริ่มค้นหา...</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- Graph Tab -->
+      <section id="tab-graph" class="tab-content">
+        <div class="graph-controls">
+          <button id="graph-zoom-in" class="btn-small">🔍+</button>
+          <button id="graph-zoom-out" class="btn-small">🔍-</button>
+          <button id="graph-reset" class="btn-small">↺ รีเซ็ต</button>
+          <span class="graph-info" id="graph-info"></span>
+        </div>
+        <div class="graph-container">
+          <canvas id="knowledge-graph"></canvas>
+        </div>
+        <div class="graph-legend">
+          <span class="legend-item"><span class="legend-dot hot"></span> น้ำหนักสูง</span>
+          <span class="legend-item"><span class="legend-dot normal"></span> ปกติ</span>
+          <span class="legend-item"><span class="legend-line thick"></span> เชื่อมโยงมาก</span>
+          <span class="legend-item"><span class="legend-line thin"></span> เชื่อมโยงน้อย</span>
+        </div>
+      </section>
+
+      <!-- Settings Tab -->
+      <section id="tab-settings" class="tab-content">
+        <div class="settings-section">
+          <h3>⚙️ การตั้งค่า</h3>
+          
+          <div class="setting-item">
+            <label for="setting-auto-detect">🔍 ตรวจจับข้อมูลขยะอัตโนมัติ</label>
+            <input type="checkbox" id="setting-auto-detect" checked>
+            <p class="setting-desc">ลบข้อมูลที่ไม่มีเนื้อหาหรือซ้ำซ้อนโดยอัตโนมัติ</p>
+          </div>
+          
+          <div class="setting-item">
+            <label for="setting-junk-threshold">เกณฑ์น้ำหนักขั้นต่ำสำหรับข้อมูลขยะ</label>
+            <input type="range" id="setting-junk-threshold" min="0" max="10" value="2" step="1">
+            <span id="threshold-value">2</span>
+            <p class="setting-desc">ข้อมูลที่มีน้ำหนักต่ำกว่าเกณฑ์นี้จะถูกพิจารณาเป็นขยะ</p>
+          </div>
+          
+          <div class="setting-actions">
+            <button id="btn-run-detect" class="btn-secondary">🛡️ ตรวจหาขยะเดี๋ยวนี้</button>
+            <button id="btn-export-data" class="btn-secondary">📤 ส่งออกข้อมูล</button>
+            <button id="btn-import-data" class="btn-secondary">📥 นำเข้าข้อมูล</button>
+            <button id="btn-clear-all" class="btn-danger">🗑️ ล้างข้อมูลทั้งหมด</button>
+          </div>
+          
+          <div id="settings-message" class="message"></div>
+        </div>
+        
+        <div class="settings-section">
+          <h3>📊 สถิติระบบ</h3>
+          <div id="system-stats">
+            <p>กำลังโหลด...</p>
+          </div>
+        </div>
+      </section>
+
+    </main>
+
+    <!-- Node Detail Modal -->
+    <div id="node-modal" class="modal hidden">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h2 id="modal-title">รายละเอียดข้อมูล</h2>
+          <button id="modal-close" class="btn-icon">✕</button>
+        </div>
+        <div class="modal-body" id="modal-body"></div>
+        <div class="modal-footer">
+          <button id="modal-edit" class="btn-primary">✏️ แก้ไข</button>
+          <button id="modal-delete" class="btn-danger">🗑️ ลบ</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Toast Notification -->
+    <div id="toast" class="toast hidden"></div>
+
+  </div>
+
+  <!-- Scripts (Order matters for dependency) -->
+  <script src="js/database.js"></script>
+  <script src="js/search.js"></script>
+  <script src="js/update.js"></script>
+  <script src="js/detect.js"></script>
+  <script src="js/graph.js"></script>
+  <script src="js/app.js"></script>
+
+  <!-- Register Service Worker -->
+  <script>
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => {
+        navigator.serviceWorker.register('/sw.js').then(reg => {
+          console.log('[SW] Registered:', reg.scope);
+        }).catch(err => {
+          console.error('[SW] Registration failed:', err);
+        });
+      });
+    }
+  </script>
+</body>
+  </html>
